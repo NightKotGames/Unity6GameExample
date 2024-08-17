@@ -2,9 +2,9 @@
 
 namespace DI
 {
-    internal class DiRegistration
+    internal class DIRegistration
     {
-        internal Func<DiRegistration, object> Factory { get; set; }
+        internal Func<DIContainer, object> Factory { get; set; }
         internal bool IsSiglton { get; set; }
         internal object Instance { get; set; }
     }
