@@ -14,9 +14,20 @@ namespace DI
 
             var sceneContainer = new DIContainer(projectContainer);
             sceneContainer.RegisterSingleton(c => new MySceneProjectService(c.Resolve<MyAwesomeProjectService>()));
-            sceneContainer.RegisterSingleton(_ => new MyAwesomeFactory());
-            sceneContainer.RegisterInstance(new MyAwesomeObject("instanceID", 100));
+            sceneContainer.RegisterSingleton(_ => new MyAwesomeFactory()); // Регистрируем Фабрику
+            sceneContainer.RegisterInstance(new MyAwesomeObject("instanceID", 100)); // Регистрируем Продукт Фабрики
 
+            var objectFactory = sceneContainer.Resolve<MyAwesomeFactory>(); // Достаем из Конейнера Фабрику
+
+            for (int i = 0; i < 3; i++)
+            {
+                var id = $"o{i}";
+                var o = objectFactory.CreateInstance(id,i);
+                Debug.Log($"Object Created in Factory \n{o}");
+            }
+
+            var instance = sceneContainer.Resolve<MyAwesomeObject>();
+            Debug.Log($"\n Object - {instance} - Instance");
         }
     }
 }

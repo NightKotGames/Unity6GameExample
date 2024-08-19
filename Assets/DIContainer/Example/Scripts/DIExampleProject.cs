@@ -1,4 +1,4 @@
-using System;
+
 using UnityEngine;
 
 namespace DI
@@ -24,13 +24,15 @@ namespace DI
     internal class MyAwesomeObject
     {
         private readonly string _id;
-        private readonly int par1;
+        private readonly int _par1;
 
         internal MyAwesomeObject(string id, int par1)
         {
             _id = id;
-            this.par1 = par1;   
+            this._par1 = par1;   
         }
+
+        public override string ToString() => $"Object with ID: {_id} and part1: {_par1}";
     }
 
 
