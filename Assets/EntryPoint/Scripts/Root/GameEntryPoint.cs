@@ -39,20 +39,42 @@ namespace EntryPoint
 
             var sceneName = SceneManager.GetActiveScene().name;
             
-            if(sceneName == Scenes.GAMEPLAY)
+            if(sceneName == Scenes.MAINMENU)
             {
-                _corutines.StartCoroutine(LoadingAndStartGameplay());
+                _corutines.StartCoroutine(LoadingAndStartMainMenu());
+                return;
+            }
+
+            if (sceneName == Scenes.GAMEPLAY)
+            {
+                _corutines.StartCoroutine(LoadingAndStartGamePlay());
                 return;
             }
 
             if (sceneName != Scenes.BOOT)
                 return;
 #endif
-            _corutines.StartCoroutine(LoadingAndStartGameplay());
+            _corutines.StartCoroutine(LoadingAndStartMainMenu());
 
         }
 
-        private IEnumerator LoadingAndStartGameplay()
+        private IEnumerator LoadingAndStartMainMenu()
+        {
+            _uiRoot.ShowLoadingScreen();
+
+            yield return LoadScene(Scenes.BOOT);
+            yield return LoadScene(Scenes.MAINMENU);
+
+            yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
+
+            ///
+            //var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            //sceneEntryPoint.Run(_uiRoot);
+            
+            _uiRoot.HideLoadingScreen();
+        }
+        
+        private IEnumerator LoadingAndStartGamePlay()
         {
             _uiRoot.ShowLoadingScreen();
 
@@ -62,8 +84,8 @@ namespace EntryPoint
             yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
 
             ///
-            var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
-            sceneEntryPoint.Run();
+            //var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
+            //sceneEntryPoint.Run(_uiRoot);
             
             _uiRoot.HideLoadingScreen();
         }
