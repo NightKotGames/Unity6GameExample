@@ -47,7 +47,7 @@ namespace EntryPoint
 
             if (sceneName == Scenes.GAMEPLAY)
             {
-                _corutines.StartCoroutine(LoadingAndStartGamePlay());
+                //_corutines.StartCoroutine(LoadingAndStartGamePlay());
                 return;
             }
 
@@ -72,13 +72,13 @@ namespace EntryPoint
             sceneEntryPoint.Run(_uiRoot);
 
             ///
-            sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());
+            //sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());
             
             
             _uiRoot.HideLoadingScreen();
         }
         
-        private IEnumerator LoadingAndStartGamePlay()
+        private IEnumerator LoadingAndStartGamePlay(GamePlayEnterParams enterParams)
         {
             _uiRoot.ShowLoadingScreen();
 
@@ -89,10 +89,9 @@ namespace EntryPoint
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot);
+            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(gamePlayExitParams => _corutines.StartCoroutine(LoadingAndStartMainMenu()));
 
             ///
-            sceneEntryPoint.GotoManiMenuSceneRequested += () => _corutines.StartCoroutine(LoadingAndStartMainMenu());
 
 
 
