@@ -68,8 +68,12 @@ namespace EntryPoint
             yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
 
             ///
-            //var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
-            //sceneEntryPoint.Run(_uiRoot);
+            var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
+            sceneEntryPoint.Run(_uiRoot);
+
+            ///
+            sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());
+            
             
             _uiRoot.HideLoadingScreen();
         }
@@ -84,9 +88,14 @@ namespace EntryPoint
             yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
 
             ///
-            //var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
-            //sceneEntryPoint.Run(_uiRoot);
-            
+            var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
+            sceneEntryPoint.Run(_uiRoot);
+
+            ///
+            sceneEntryPoint.GotoManiMenuSceneRequested += () => _corutines.StartCoroutine(LoadingAndStartMainMenu());
+
+
+
             _uiRoot.HideLoadingScreen();
         }
 

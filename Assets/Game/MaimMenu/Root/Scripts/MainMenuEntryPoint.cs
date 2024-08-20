@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class MainMenuEntryPoint : MonoBehaviour
 {
-    [SerializeField] private UIGamePlayRootBinder _sceneUIRootPrefab;
+    [SerializeField] private UIMainMenuRootBinder _sceneUIRootPrefab;
 
-    public event Action GotoManiMenuSceneRequested = delegate { };
+    public event Action GotoGamePlaySceneRequested = delegate { };
 
     internal void Run(UIRootView uIRoot)
     {
@@ -15,7 +15,7 @@ public class MainMenuEntryPoint : MonoBehaviour
         var uiScene = Instantiate(_sceneUIRootPrefab);
         uIRoot.AttachSceneUI(uiScene.gameObject);
 
-        uiScene.OnGotoManiMenuButtonCkicked += () => GotoManiMenuSceneRequested.Invoke();
+        uiScene.OnGotoGamePlaySceneButtonCkicked += () => GotoGamePlaySceneRequested.Invoke();
 
     }
 }

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class UIGamePlayRootBinder : MonoBehaviour
 {
-    public event Action OnGotoManiMenuButtonCkicked = delegate { };
+    public event Action OnGotoMainMenuButtonCkicked = delegate { };
+    public event Action OnGotoGamePlaySceneButtonClicked = delegate { };
 
-    public void HandleGotoMainMenuButtonClick() => OnGotoManiMenuButtonCkicked.Invoke();
-
+    public void HandleGotoMainMenuButtonClick() => OnGotoMainMenuButtonCkicked.Invoke();
 }

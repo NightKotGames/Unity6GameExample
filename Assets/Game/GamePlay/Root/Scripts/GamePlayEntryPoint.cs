@@ -15,7 +15,7 @@ public class GamePlayEntryPoint : MonoBehaviour
         var uiScene = Instantiate(_sceneUIRootPrefab);
         uIRoot.AttachSceneUI(uiScene.gameObject);
 
-        uiScene.OnGotoManiMenuButtonCkicked += () => GotoManiMenuSceneRequested.Invoke();
+        uiScene.OnGotoMainMenuButtonCkicked += () => GotoManiMenuSceneRequested.Invoke();
 
     }
 }
