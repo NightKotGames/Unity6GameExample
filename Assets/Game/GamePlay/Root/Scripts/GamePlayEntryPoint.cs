@@ -18,9 +18,11 @@ public class GamePlayEntryPoint : MonoBehaviour
         var exitSceneSignalSubj = new Subject<Unit>();
         uiScene.Bind(exitSceneSignalSubj);
 
+        Debug.Log($"GAMEPLAY ENTRY POINT: saveFileName = {enterParams.SaveFileName}, Level to Load = {enterParams.LevelNumber}");
+
         // Создаем какие то выходные параметры Сцены
 
-        var mainMenuEnterParams = new MainMenuEnterParams("variable params for Main Menu...");
+        var mainMenuEnterParams = new MainMenuEnterParams("Vvariable params for Main Menu from GamePlay Scene...");
         var exitParams = new GamePlayExitParams(mainMenuEnterParams);
 
         // Преобразовываем Unit (exitSceneSignalSubj) в Выходной Тип

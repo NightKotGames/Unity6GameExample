@@ -48,7 +48,10 @@ namespace EntryPoint
 
             if (sceneName == Scenes.GAMEPLAY)
             {
-                _corutines.StartCoroutine(LoadingAndStartGamePlay());
+                // какие то фейковые параметры
+                var gamePlayEnterParams = new GamePlayEnterParams("default.save", 1);
+
+                _corutines.StartCoroutine(LoadingAndStartGamePlay(gamePlayEnterParams));
                 return;
             }
 
@@ -66,14 +69,20 @@ namespace EntryPoint
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
 
-            yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
+            yield return new WaitForSeconds(1); // На всякий случай ждем...
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot, enterParams);
+            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(mainMenuExitParams => 
+            { 
+                var targetSceneName = mainMenuExitParams.TargetSceneEnterParams.SceneName;
+
+                if (targetSceneName == Scenes.GAMEPLAY)
+                    _corutines.StartCoroutine(LoadingAndStartGamePlay(mainMenuExitParams.TargetSceneEnterParams.As<GamePlayEnterParams>()));
+            });
 
             ///
-            sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());            
+                       
             
             
             _uiRoot.HideLoadingScreen();
@@ -86,7 +95,7 @@ namespace EntryPoint
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.GAMEPLAY);
 
-            yield return new WaitForSeconds(2); // На всякий случай ждем две скунды...
+            yield return new WaitForSeconds(1); // На всякий случай ждем...
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
