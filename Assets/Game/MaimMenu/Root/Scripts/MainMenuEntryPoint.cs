@@ -8,7 +8,7 @@ public class MainMenuEntryPoint : MonoBehaviour
 
     public event Action GotoGamePlaySceneRequested = delegate { };
 
-    internal void Run(UIRootView uIRoot)
+    internal void Run(UIRootView uIRoot, MainMenuEnterParams enterParams)
     {
         Debug.Log("GamePlay Scene is Loaded!");
 
@@ -16,6 +16,8 @@ public class MainMenuEntryPoint : MonoBehaviour
         uIRoot.AttachSceneUI(uiScene.gameObject);
 
         uiScene.OnGotoGamePlaySceneButtonCkicked += () => GotoGamePlaySceneRequested.Invoke();
+
+        Debug.Log($"MAIN MENU ENTRY POINT: Run Main Menu Scene - Result: {enterParams?.Result}");
 
     }
 }

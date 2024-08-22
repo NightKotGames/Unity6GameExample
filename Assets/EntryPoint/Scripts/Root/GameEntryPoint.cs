@@ -1,4 +1,5 @@
 
+using R3;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,7 +48,7 @@ namespace EntryPoint
 
             if (sceneName == Scenes.GAMEPLAY)
             {
-                //_corutines.StartCoroutine(LoadingAndStartGamePlay());
+                _corutines.StartCoroutine(LoadingAndStartGamePlay());
                 return;
             }
 
@@ -58,7 +59,7 @@ namespace EntryPoint
 
         }
 
-        private IEnumerator LoadingAndStartMainMenu()
+        private IEnumerator LoadingAndStartMainMenu(MainMenuEnterParams enterParams = null)
         {
             _uiRoot.ShowLoadingScreen();
 
@@ -69,16 +70,16 @@ namespace EntryPoint
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot);
+            sceneEntryPoint.Run(_uiRoot, enterParams);
 
             ///
-            //sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());
+            sceneEntryPoint.GotoGamePlaySceneRequested += () => _corutines.StartCoroutine(LoadingAndStartGamePlay());            
             
             
             _uiRoot.HideLoadingScreen();
         }
         
-        private IEnumerator LoadingAndStartGamePlay(GamePlayEnterParams enterParams)
+        private IEnumerator LoadingAndStartGamePlay(GamePlayEnterParams enterParams = null)
         {
             _uiRoot.ShowLoadingScreen();
 
@@ -89,7 +90,7 @@ namespace EntryPoint
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(gamePlayExitParams => _corutines.StartCoroutine(LoadingAndStartMainMenu()));
+            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(gamePlayExitParams => _corutines.StartCoroutine(LoadingAndStartMainMenu(gamePlayExitParams.MainMenuEnterParams)));
 
             ///
 

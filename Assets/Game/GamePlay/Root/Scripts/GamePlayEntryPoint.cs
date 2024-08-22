@@ -18,12 +18,12 @@ public class GamePlayEntryPoint : MonoBehaviour
         var exitSceneSignalSubj = new Subject<Unit>();
         uiScene.Bind(exitSceneSignalSubj);
 
-        // Создаем выходные параметры
+        // Создаем какие то выходные параметры Сцены
 
         var mainMenuEnterParams = new MainMenuEnterParams("variable params for Main Menu...");
         var exitParams = new GamePlayExitParams(mainMenuEnterParams);
 
-        // Преобразовываем Unit (exitSceneSignalSubj) в
+        // Преобразовываем Unit (exitSceneSignalSubj) в Выходной Тип
         
         var exitToMainMenuSceneSignal = exitSceneSignalSubj.Select(_ => exitParams);
 
