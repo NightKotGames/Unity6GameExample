@@ -1,4 +1,5 @@
 
+using DI;
 using R3;
 using System.Collections;
 using UnityEngine;
@@ -12,6 +13,10 @@ namespace EntryPoint
         private static GameEntryPoint _instance;
         private Coroutines _corutines;
         private UIRootView _uiRoot;
+
+        // —оздаем контейнеры
+        private readonly DIContainer _rootContainer = new();
+        private DIContainer _cachetSceneContainer;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)] public static void AutoStartGame()
         {
@@ -31,6 +36,19 @@ namespace EntryPoint
             var prefabUIRoot = Resources.Load<UIRootView>("UIRoot");
             _uiRoot = UnityEngine.Object.Instantiate(prefabUIRoot);
             UnityEngine.Object.DontDestroyOnLoad(_uiRoot.gameObject);
+
+
+            // регистрируем контейнер проекта 
+            _rootContainer.RegisterInstance(_uiRoot);
+
+            // —оздастс€ по запросу через Factory
+            _rootContainer.RegisterFactory(_ => new SomeCommonService()).AsSingle();
+
+            /// ќпционально в контейнер проекта кладутс€:
+            /// —ервисы ћонетизации, јнилитики и т.д...
+            
+            
+
         }
 
         private void RunGame()
@@ -65,6 +83,8 @@ namespace EntryPoint
         private IEnumerator LoadingAndStartMainMenu(MainMenuEnterParams enterParams = null)
         {
             _uiRoot.ShowLoadingScreen();
+            // пока загружаетс€ уровень, если контейнер уровн€ существует - очищаем его
+            _cachetSceneContainer?.Dispose();
 
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.MAINMENU);
@@ -73,7 +93,11 @@ namespace EntryPoint
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<MainMenuEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(mainMenuExitParams => 
+            
+            /// создаем контейнер игровой сцены (родитель - контейнер проекта)
+            var mainMenuContainer = _cachetSceneContainer = new DIContainer(_rootContainer);     
+            
+            sceneEntryPoint.Run(mainMenuContainer, enterParams).Subscribe(mainMenuExitParams => 
             { 
                 var targetSceneName = mainMenuExitParams.TargetSceneEnterParams.SceneName;
 
@@ -92,6 +116,9 @@ namespace EntryPoint
         {
             _uiRoot.ShowLoadingScreen();
 
+            // пока загружаетс€ уровень, если контейнер уровн€ существует - очищаем его
+            _cachetSceneContainer?.Dispose();
+
             yield return LoadScene(Scenes.BOOT);
             yield return LoadScene(Scenes.GAMEPLAY);
 
@@ -99,7 +126,11 @@ namespace EntryPoint
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
-            sceneEntryPoint.Run(_uiRoot, enterParams).Subscribe(gamePlayExitParams => _corutines.StartCoroutine(LoadingAndStartMainMenu(gamePlayExitParams.MainMenuEnterParams)));
+
+            /// создаем контейнер игровой сцены (родитель - контейнер проекта)
+            var gamePlayContainer = _cachetSceneContainer = new DIContainer(_rootContainer);
+
+            sceneEntryPoint.Run(gamePlayContainer, enterParams).Subscribe(gamePlayExitParams => _corutines.StartCoroutine(LoadingAndStartMainMenu(gamePlayExitParams.MainMenuEnterParams)));
 
             ///
 
