@@ -1,6 +1,7 @@
 
 using DI;
 using R3;
+using StateGame;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,7 @@ namespace EntryPoint
 
             // Запуск
             _instance = new GameEntryPoint();
+
             _instance.RunGame();
         }
 
@@ -40,6 +42,11 @@ namespace EntryPoint
 
             // регистрируем контейнер проекта 
             _rootContainer.RegisterInstance(_uiRoot);
+            
+            // Инициализируем Загрузки/Сохранения. Обязательно в Контейнере указываем Интерфейс
+            var gameStateProvider = new JsonGameStateProvider();
+            _rootContainer.RegisterInstance<IGameStateProvider>(gameStateProvider); 
+
 
             // Создастся по запросу через Factory
             _rootContainer.RegisterFactory(_ => new SomeCommonService()).AsSingle();
@@ -123,6 +130,15 @@ namespace EntryPoint
             yield return LoadScene(Scenes.GAMEPLAY);
 
             yield return new WaitForSeconds(1); // На всякий случай ждем...
+
+
+            //  Загружаем Состояние Сценыиз GameStateProvider
+
+            //  Достаем из Контейнера GameStateProvider, загружем Состояние, подписываемся на isGameStateLoaded = true
+            var isGameStateLoaded = false;
+            _rootContainer.Resolve<IGameStateProvider>().LoadGameState().Subscribe(_ => isGameStateLoaded = true);
+            // дожидаемся isGameStateLoaded = true
+            yield return new WaitUntil(() => isGameStateLoaded == true);
 
             ///
             var sceneEntryPoint = UnityEngine.Object.FindFirstObjectByType<GamePlayEntryPoint>();
